@@ -3,200 +3,985 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Evorise</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <title>FluxOn — Gestão de restaurantes que funciona de verdade</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{background:#08080D}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
-    .bg-gradient{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:0;
-      background:
-        radial-gradient(ellipse 50% 40% at 0% 0%, rgba(123,79,166,0.13) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 100% 100%, rgba(123,79,166,0.10) 0%, transparent 70%);
+    :root {
+      --red: #EF4444;
+      --red-dark: #B91C1C;
+      --red-glow: rgba(239,68,68,0.15);
+      --bg: #0A0A0A;
+      --surface: #141414;
+      --surface2: #1C1C1C;
+      --text: #F0EEE6;
+      --text-muted: rgba(240,238,230,0.42);
+      --text-faint: rgba(240,238,230,0.18);
+      --border: rgba(255,255,255,0.07);
     }
 
-    .ev{position:relative;z-index:1;font-family:'DM Sans',sans-serif;color:#F0EEE6;max-width:1200px;margin:0 auto}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
 
-    nav{display:flex;justify-content:center;align-items:center;padding:22px 48px;border-bottom:0.5px solid rgba(255,255,255,0.07)}
-    .nav-logo{font-family:'DM Sans',sans-serif;font-weight:600;font-size:24px;letter-spacing:6px;text-transform:uppercase;color:#7B4FA6}
+    /* ── NOISE TEXTURE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
 
-    .hero{padding:100px 48px 80px;max-width:680px}
-    .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#7B4FA6;margin-bottom:24px;font-weight:500}
-    .hero-head{font-family:'DM Sans',sans-serif;font-weight:300;font-size:52px;line-height:1.04;letter-spacing:-1.5px;color:#F0EEE6;margin-bottom:28px}
-    .hero-head em{font-style:normal;color:rgba(240,238,230,0.4)}
-    .hero-sub{font-size:15px;font-weight:400;color:rgba(240,238,230,0.4);line-height:1.8;max-width:440px;margin-bottom:40px}
-    .btn-primary{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:12px 26px;border-radius:6px;border:none;background:#F0EEE6;color:#08080D;cursor:pointer;transition:opacity 0.15s}
-    .btn-primary:hover{opacity:0.87}
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 60px;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--red);
+      letter-spacing: -0.3px;
+    }
+    .nav-logo span { color: var(--text); }
+    .nav-cta {
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 9px 20px;
+      border-radius: 6px;
+      background: var(--red);
+      color: #fff;
+      text-decoration: none;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { background: var(--red-dark); }
 
-    .divider{height:0.5px;background:rgba(255,255,255,0.07);margin:0 48px}
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 60px 90px;
+      overflow: hidden;
+    }
+    .hero-bg-glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(239,68,68,0.12) 0%, transparent 70%);
+      top: -100px; right: -150px;
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--red);
+      font-weight: 500;
+      margin-bottom: 22px;
+    }
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(34px, 5.2vw, 64px);
+      line-height: 1.02;
+      letter-spacing: -1.5px;
+      color: var(--text);
+      max-width: 660px;
+      margin-bottom: 26px;
+    }
+    .hero-title .accent { color: var(--red); }
+    .hero-sub {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 460px;
+      margin-bottom: 42px;
+    }
+    .hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 13px 24px;
+      border-radius: 8px;
+      background: var(--red);
+      color: #fff;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--red-dark); transform: translateY(-1px); }
+    .btn-ghost {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); }
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 30px;
+      left: 60px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 10.5px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    .scroll-line {
+      width: 36px;
+      height: 0.5px;
+      background: var(--text-faint);
+    }
 
-    .products-section{padding:72px 48px}
-    .section-header{margin-bottom:52px}
-    .section-kicker{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#7B4FA6;font-weight:500;margin-bottom:10px}
-    .section-title{font-family:'DM Sans',sans-serif;font-weight:300;font-size:36px;letter-spacing:-1px;color:#F0EEE6;line-height:1.1}
+    /* ── DORES ── */
+    .dores {
+      position: relative;
+      z-index: 1;
+      padding: 84px 60px;
+      border-top: 0.5px solid var(--border);
+    }
+    .section-kicker {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--red);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: -0.8px;
+      color: var(--text);
+      margin-bottom: 52px;
+      line-height: 1.15;
+    }
+    .section-title em {
+      font-style: normal;
+      color: var(--text-muted);
+    }
+    .dores-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .dor-card {
+      background: var(--surface);
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s;
+    }
+    .dor-card:hover { background: var(--surface2); }
+    .dor-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--red);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+      transform-origin: left;
+    }
+    .dor-card:hover::before { transform: scaleX(1); }
+    .dor-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      color: rgba(239,68,68,0.12);
+      line-height: 1;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+    .dor-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+    .dor-desc {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
 
-    .pcard{border-top:0.5px solid rgba(255,255,255,0.07);padding:36px 0;display:grid;grid-template-columns:220px 1fr;gap:48px;align-items:start}
-    .pcard:last-child{border-bottom:0.5px solid rgba(255,255,255,0.07)}
+    /* ── KANBAN VIVO ── */
+    .kanban-section {
+      position: relative;
+      z-index: 1;
+      padding: 84px 60px;
+      border-top: 0.5px solid var(--border);
+      overflow: hidden;
+    }
+    .kanban-section-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .kanban-text .section-title { margin-bottom: 20px; }
+    .kanban-desc {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+    .kanban-live {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 22px;
+      border: 0.5px solid var(--border);
+      position: relative;
+    }
+    .kanban-live-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 0.5px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .klh-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .klh-dot.red { background: #EF4444; }
+    .klh-dot.yellow { background: #F59E0B; }
+    .klh-dot.green { background: #10B981; }
+    .klh-title {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-left: 4px;
+      letter-spacing: 0.3px;
+    }
+    .klh-badge {
+      margin-left: auto;
+      font-size: 10px;
+      color: #10B981;
+      background: rgba(16,185,129,0.12);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .kanban-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .k-col-head {
+      font-size: 9.5px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      font-weight: 500;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .k-card {
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: 9px 10px;
+      margin-bottom: 8px;
+      border: 0.5px solid var(--border);
+      font-size: 10.5px;
+    }
+    .k-card-num {
+      color: var(--red);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .k-card-item { color: var(--text-muted); line-height: 1.5; }
+    .k-card-time {
+      color: var(--text-faint);
+      font-size: 9.5px;
+      margin-top: 6px;
+    }
+    /* animação de entrada dos cards */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .k-card { animation: slideIn 0.4s ease both; }
+    .k-card:nth-child(1) { animation-delay: 0.1s; }
+    .k-card:nth-child(2) { animation-delay: 0.3s; }
+    .k-card:nth-child(3) { animation-delay: 0.5s; }
 
-    .ptag{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:500;padding:4px 0;margin-bottom:18px;background:transparent}
-    .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    /* ── MÓDULOS ── */
+    .modulos {
+      position: relative;
+      z-index: 1;
+      padding: 84px 60px;
+      border-top: 0.5px solid var(--border);
+    }
+    .modulos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 52px;
+    }
+    .mod-card {
+      background: var(--surface);
+      padding: 32px 26px;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .mod-card:hover { background: var(--surface2); }
+    .mod-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--red-glow);
+      border: 0.5px solid rgba(239,68,68,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .mod-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 16.5px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+    .mod-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+    .mod-card.highlight {
+      background: rgba(239,68,68,0.06);
+      border: 0.5px solid rgba(239,68,68,0.2);
+    }
 
-    .t-fluxon{color:#EF4444}.t-fluxon .dot{background:#EF4444}
-    .t-flowex{color:rgba(59,130,246,0.6)}.t-flowex .dot{background:rgba(59,130,246,0.5)}
-    .t-veraxy{color:rgba(6,182,212,0.6)}.t-veraxy .dot{background:rgba(6,182,212,0.5)}
-    .t-verizy{color:rgba(234,179,8,0.6)}.t-verizy .dot{background:rgba(234,179,8,0.5)}
+    /* ── NUMEROS ── */
+    .numeros {
+      position: relative;
+      z-index: 1;
+      padding: 84px 60px;
+      border-top: 0.5px solid var(--border);
+      background: linear-gradient(180deg, transparent 0%, rgba(239,68,68,0.04) 50%, transparent 100%);
+    }
+    .numeros-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 0.5px solid var(--border);
+    }
+    .num-item {
+      padding: 40px 28px;
+      border-right: 0.5px solid var(--border);
+      text-align: center;
+    }
+    .num-item:last-child { border-right: none; }
+    .num-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--red);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .num-label {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 120px;
+      margin: 0 auto;
+    }
 
-    .pname{font-family:'DM Sans',sans-serif;font-weight:500;font-size:24px;letter-spacing:-0.3px;margin-bottom:4px}
-    .pname-active{color:#F0EEE6}
-    .pname-soon{color:rgba(240,238,230,0.35)}
-    .pniche{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:400}
-    .pniche-active{color:rgba(240,238,230,0.28)}
-    .pniche-soon{color:rgba(240,238,230,0.18)}
+    /* ── PLANOS ── */
+    .planos {
+      position: relative;
+      z-index: 1;
+      padding: 84px 60px;
+      border-top: 0.5px solid var(--border);
+    }
+    .planos-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-top: 52px;
+    }
+    .plano-card {
+      background: var(--surface);
+      padding: 30px 24px;
+      position: relative;
+    }
+    .plano-card.destaque {
+      background: var(--surface2);
+      border: 0.5px solid rgba(239,68,68,0.3);
+    }
+    .plano-badge {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--red);
+      background: var(--red-glow);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .plano-nome {
+      font-family: 'Syne', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+      letter-spacing: -0.3px;
+    }
+    .plano-nicho {
+      font-size: 10.5px;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 22px;
+    }
+    .plano-divider {
+      height: 0.5px;
+      background: var(--border);
+      margin-bottom: 20px;
+    }
+    .plano-features { list-style: none; }
+    .plano-features li {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      padding: 7px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+      border-bottom: 0.5px solid rgba(255,255,255,0.04);
+    }
+    .plano-features li:last-child { border-bottom: none; }
+    .plano-features li::before {
+      content: '→';
+      color: var(--red);
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
 
-    .ppain{font-size:13px;font-style:italic;color:rgba(240,238,230,0.3);margin-bottom:14px;line-height:1.6;border-left:2px solid rgba(123,79,166,0.4);padding-left:12px}
-    .pdesc{font-size:14px;font-weight:400;color:rgba(240,238,230,0.52);line-height:1.8;margin-bottom:22px}
-    .pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
-    .pill{font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid rgba(255,255,255,0.1);color:rgba(240,238,230,0.35);font-weight:400}
-    .pcta{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:10px 20px;border-radius:6px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:filter 0.15s;background:#DC2626;color:#fff;text-decoration:none}
-    .pcta:hover{filter:brightness(1.1)}
+    /* ── CTA / CALENDÁRIO ── */
+    .cta-section {
+      position: relative;
+      z-index: 1;
+      padding: 84px 60px 100px;
+      border-top: 0.5px solid var(--border);
+      text-align: center;
+    }
+    .cta-section .section-kicker { justify-content: center; display: block; }
+    .cta-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(26px, 4vw, 44px);
+      letter-spacing: -1px;
+      color: var(--text);
+      max-width: 640px;
+      margin: 0 auto 18px;
+      line-height: 1.1;
+    }
+    .cta-title .accent { color: var(--red); }
+    .cta-sub {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      max-width: 420px;
+      margin: 0 auto 48px;
+      line-height: 1.75;
+    }
+    .cal-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: 16px;
+      border: 0.5px solid var(--border);
+      overflow: hidden;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-placeholder {
+      text-align: center;
+      padding: 60px 40px;
+    }
+    .cal-placeholder-icon {
+      font-size: 44px;
+      margin-bottom: 18px;
+      opacity: 0.3;
+    }
+    .cal-placeholder-text {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .cal-placeholder-text strong {
+      display: block;
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
 
-    .soon-row{display:flex;justify-content:flex-end;align-items:center;height:100%}
-    .soon-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,238,230,0.22);font-weight:400}
-    .soon-dot{width:4px;height:4px;border-radius:50%;background:rgba(240,238,230,0.18)}
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 40px 60px 28px;
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .foot-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--red);
+    }
+    .foot-logo span { color: var(--text-muted); }
+    .foot-copy {
+      font-size: 10.5px;
+      color: var(--text-faint);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .foot-back {
+      font-size: 12px;
+      color: var(--text-faint);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .foot-back:hover { color: var(--text-muted); }
 
-    footer{padding:48px 48px 32px;border-top:0.5px solid rgba(255,255,255,0.07)}
-    .footer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px}
-    .foot-logo{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#7B4FA6;margin-bottom:10px}
-    .foot-tagline{font-size:13px;color:rgba(240,238,230,0.3);line-height:1.7;max-width:280px}
-    .foot-tagline span{color:#7B4FA6}
-    .foot-social a{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(240,238,230,0.4);text-decoration:none;font-size:18px;transition:color 0.15s,border-color 0.15s}
-    .foot-social a:hover{color:#7B4FA6;border-color:rgba(123,79,166,0.4)}
-    .footer-bottom{border-top:0.5px solid rgba(255,255,255,0.05);padding-top:24px;text-align:center}
-    .foot-copy{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(240,238,230,0.12);font-weight:400}
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-    @media(max-width:768px){
-      nav{padding:18px 24px}
-      .nav-logo{font-size:22px;letter-spacing:4px}
+    /* ── RESPONSIVE: TABLET ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .hero { padding: 110px 24px 70px; }
+      .dores { padding: 64px 24px; }
+      .dores-grid { grid-template-columns: 1fr; gap: 2px; }
+      .kanban-section { padding: 64px 24px; }
+      .kanban-section-inner { grid-template-columns: 1fr; gap: 40px; }
+      .modulos { padding: 64px 24px; }
+      .modulos-grid { grid-template-columns: repeat(2, 1fr); gap: 2px; }
+      .numeros { padding: 64px 24px; }
+      .numeros-grid { grid-template-columns: repeat(2, 1fr); }
+      .num-item:nth-child(2) { border-right: none; }
+      .num-item:nth-child(3) { border-right: 0.5px solid var(--border); }
+      .num-item { padding: 32px 20px; }
+      .planos { padding: 64px 24px; }
+      .planos-grid { grid-template-columns: repeat(2, 1fr); gap: 2px; }
+      .cta-section { padding: 64px 24px 88px; }
+      footer { padding: 32px 24px; flex-direction: column; gap: 14px; text-align: center; }
+    }
 
-      .hero{padding:64px 24px 56px;max-width:100%}
-      .hero-head{font-size:36px;letter-spacing:-1px}
-      .hero-sub{font-size:14px;max-width:100%}
+    /* ── RESPONSIVE: MOBILE ── */
+    @media (max-width: 600px) {
+      nav { padding: 14px 18px; }
+      .nav-logo { font-size: 17px; }
+      .nav-cta { font-size: 11.5px; padding: 8px 16px; }
 
-      .divider{margin:0 24px}
+      .hero { padding: 128px 20px 56px; min-height: auto; }
+      .hero-title { font-size: clamp(30px, 9vw, 40px); letter-spacing: -1px; max-width: 100%; }
+      .hero-sub { font-size: 14.5px; max-width: 100%; margin-bottom: 44px; }
+      .hero-eyebrow { font-size: 10px; letter-spacing: 2px; margin-bottom: 30px; }
+      .hero-scroll-hint { display: none; }
+      .hero-actions { gap: 12px; }
+      .btn-primary { font-size: 13px; padding: 12px 20px; width: 100%; justify-content: center; }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .btn-ghost { text-align: center; }
 
-      .products-section{padding:48px 24px}
-      .section-title{font-size:28px}
+      .section-title { font-size: clamp(21px, 6vw, 26px); letter-spacing: -0.5px; margin-bottom: 36px; }
+      .section-kicker { font-size: 10px; }
 
-      .pcard{grid-template-columns:1fr;gap:20px;padding:28px 0}
-      .ptag{margin-bottom:10px}
-      .pname{font-size:20px}
+      .dores { padding: 52px 20px; }
+      .dor-card { padding: 26px 22px; }
+      .dor-num { font-size: 32px; margin-bottom: 12px; }
+      .dor-title { font-size: 14.5px; }
+      .dor-desc { font-size: 12.5px; }
 
-      .soon-row{justify-content:flex-start;margin-top:4px}
+      .kanban-section { padding: 52px 20px; }
+      .kanban-desc { font-size: 13.5px; }
+      .kanban-live { padding: 18px; }
+      .kanban-cols { grid-template-columns: 1fr; gap: 10px; }
+      .k-col-head { margin-bottom: 6px; }
 
-      footer{padding:40px 24px 28px}
-      .footer-top{flex-direction:column;gap:28px}
-      .foot-copy{font-size:10px;letter-spacing:2px}
+      .modulos { padding: 52px 20px; }
+      .modulos-grid { grid-template-columns: 1fr; }
+      .mod-card { padding: 26px 22px; }
+
+      .numeros { padding: 52px 20px; }
+      .numeros-grid { grid-template-columns: 1fr; border: 0.5px solid var(--border); }
+      .num-item { border-right: none !important; border-bottom: 0.5px solid var(--border); padding: 26px 20px; }
+      .num-item:last-child { border-bottom: none; }
+      .num-value { font-size: 32px; }
+      .num-label { max-width: 100%; font-size: 12px; }
+
+      .planos { padding: 52px 20px; }
+      .planos-grid { grid-template-columns: 1fr; }
+      .plano-card { padding: 26px 22px; }
+
+      .cta-section { padding: 52px 20px 64px; }
+      .cta-title { font-size: clamp(24px, 8vw, 30px); letter-spacing: -0.5px; }
+      .cta-sub { font-size: 13.5px; margin-bottom: 36px; }
+      .cal-wrapper { min-height: 420px; border-radius: 12px; }
+      .cal-placeholder { padding: 40px 24px; }
+      .cal-placeholder-icon { font-size: 36px; }
+
+      footer { padding: 28px 20px 24px; }
+      .foot-logo { font-size: 15px; }
+      .foot-copy { font-size: 9.5px; }
     }
   </style>
 </head>
 <body>
 
-<div class="bg-gradient"></div>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Flux<span>ON</span></div>
+  <a href="#agendar" class="nav-cta">Agendar demonstração</a>
+</nav>
 
-<div class="ev">
-
-  <nav>
-    <div class="nav-logo">Evorise</div>
-  </nav>
-
-  <div class="hero">
-    <div class="eyebrow">Grupo Evorise · Software especializado</div>
-    <div class="hero-head">Tecnologia que entende<br><em>de verdade</em> o seu negócio.</div>
-    <p class="hero-sub">Software genérico resolve problema genérico. Cada produto da Evorise foi construído para um setor específico — com as dores, o fluxo e o vocabulário do seu negócio.</p>
-    <button class="btn-primary" onclick="document.getElementById('produtos').scrollIntoView({behavior:'smooth'})">Ver os produtos</button>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-glow"></div>
+  <div class="hero-eyebrow">Evorise · Software para o setor alimentício</div>
+  <h1 class="hero-title">
+    FluxOn.<br>
+    Gestão que<br>
+    <span class="accent">não falha</span><br>
+    no rush.
+  </h1>
+  <p class="hero-sub">Do pedido até o fechamento de caixa. Tudo em um sistema construído para a realidade de quem trabalha com comida.</p>
+  <div class="hero-actions">
+    <a href="#agendar" class="btn-primary">
+      Ver demonstração
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#como-funciona" class="btn-ghost">Como funciona →</a>
   </div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    Role para conhecer
+  </div>
+</section>
 
-  <div class="divider"></div>
-
-  <div class="products-section" id="produtos">
-    <div class="section-header">
-      <div class="section-kicker"> </div>
-      <div class="section-title">Soluções por setor</div>
+<!-- DORES -->
+<section class="dores">
+  <div class="section-kicker">O problema</div>
+  <h2 class="section-title">Você reconhece<br><em>alguma dessas situações?</em></h2>
+  <div class="dores-grid">
+    <div class="dor-card reveal">
+      <div class="dor-num">01</div>
+      <div class="dor-title">Pedido saiu errado, cliente foi embora</div>
+      <p class="dor-desc">Comunicação falha entre salão e cozinha. Sem um fluxo claro, o erro vira rotina — e o cliente não volta.</p>
     </div>
+    <div class="dor-card reveal">
+      <div class="dor-num">02</div>
+      <div class="dor-title">Não sabe quanto vendeu hoje</div>
+      <p class="dor-desc">O caixa fecha no feeling. Sem dados em tempo real, você não sabe o que está indo bem — e o que está sangrando.</p>
+    </div>
+    <div class="dor-card reveal">
+      <div class="dor-num">03</div>
+      <div class="dor-title">Delivery no WhatsApp, salão no papel</div>
+      <p class="dor-desc">Cada canal numa ferramenta diferente. O resultado é retrabalho, pedidos perdidos e equipe sobrecarregada.</p>
+    </div>
+  </div>
+</section>
 
-    <div class="pcard">
-      <div>
-        <div class="ptag t-fluxon"><span class="dot"></span>Food & Delivery</div>
-        <div class="pname pname-active">FluxOn</div>
-        <div class="pniche pniche-active">Setor alimenticio</div>
+<!-- KANBAN VIVO -->
+<section class="kanban-section" id="como-funciona">
+  <div class="kanban-section-inner">
+    <div class="kanban-text">
+      <div class="section-kicker">Como funciona</div>
+      <h2 class="section-title reveal">Tudo em uma<br>tela. Em tempo real.</h2>
+      <p class="kanban-desc reveal">O painel de pedidos do FluxOn funciona como um kanban vivo. Cada pedido entra, avança de etapa e chega ao cliente — sem nada se perder no caminho.</p>
+      <p class="kanban-desc reveal" style="margin-top:-16px">Balcão, delivery, mesa ou autoatendimento: tudo flui pelo mesmo sistema.</p>
+    </div>
+    <div class="kanban-live reveal">
+      <div class="kanban-live-header">
+        <div class="klh-dot red"></div>
+        <div class="klh-dot yellow"></div>
+        <div class="klh-dot green"></div>
+        <span class="klh-title">FluxOn · Gestão de Pedidos</span>
+        <span class="klh-badge">● ao vivo</span>
       </div>
-      <div>
-        <p class="ppain">"Pedido entrou, saiu errado, cliente foi embora."</p>
-        <p class="pdesc">Gestão completa de pedidos. Do recebimento até a satisfação do cliente sem margem pra erro.</p>
-        <div class="pills">
-          <span class="pill">Auto Atendimento</span>
-          <span class="pill">Recuperação de clientes</span>
-          <span class="pill">Integração delivery</span>
-          <span class="pill">Relatórios de venda</span>
+      <div class="kanban-cols">
+        <div>
+          <div class="k-col-head">Recebidos</div>
+          <div class="k-card">
+            <div class="k-card-num">#042</div>
+            <div class="k-card-item">2x Esfiha Carne<br>1x Suco Laranja</div>
+            <div class="k-card-time">agora mesmo</div>
+          </div>
+          <div class="k-card">
+            <div class="k-card-num">#041</div>
+            <div class="k-card-item">1x Combo Pizza<br>2x Refrigerante</div>
+            <div class="k-card-time">2 min atrás</div>
+          </div>
         </div>
-        <a href="/fluxon" class="pcta">Ver o FluxOn <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+        <div>
+          <div class="k-col-head">Em preparo</div>
+          <div class="k-card">
+            <div class="k-card-num">#040</div>
+            <div class="k-card-item">3x Esfiha Queijo<br>1x Água</div>
+            <div class="k-card-time">5 min atrás</div>
+          </div>
+          <div class="k-card">
+            <div class="k-card-num">#039</div>
+            <div class="k-card-item">1x Pizza Margherita</div>
+            <div class="k-card-time">8 min atrás</div>
+          </div>
+        </div>
+        <div>
+          <div class="k-col-head">Prontos</div>
+          <div class="k-card">
+            <div class="k-card-num">#038</div>
+            <div class="k-card-item">2x Combo Lanche<br>1x Suco Maçã</div>
+            <div class="k-card-time">12 min · Mesa 3</div>
+          </div>
+          <div class="k-card">
+            <div class="k-card-num">#037</div>
+            <div class="k-card-item">1x Porção Pastéis</div>
+            <div class="k-card-time">14 min · Balcão</div>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="pcard">
-      <div>
-        <div class="ptag t-flowex"><span class="dot"></span>Gestão de Eventos</div>
-        <div class="pname pname-soon">Flowex</div>
-        <div class="pniche pniche-soon">Produtoras · Eventos corporativos</div>
-      </div>
-      <div class="soon-row"><div class="soon-badge"><span class="soon-dot"></span>Em breve</div></div>
-    </div>
-
-    <div class="pcard">
-      <div>
-        <div class="ptag t-veraxy"><span class="dot"></span>Estética & Saúde</div>
-        <div class="pname pname-soon">Veraxy</div>
-        <div class="pniche pniche-soon">Clínicas · Espaços de estética</div>
-      </div>
-      <div class="soon-row"><div class="soon-badge"><span class="soon-dot"></span>Em breve</div></div>
-    </div>
-
-    <div class="pcard">
-      <div>
-        <div class="ptag t-verizy"><span class="dot"></span>Profissionais B2B</div>
-        <div class="pname pname-soon">Verizy</div>
-        <div class="pniche pniche-soon">Consultores · Autônomos · Contadores</div>
-      </div>
-      <div class="soon-row"><div class="soon-badge"><span class="soon-dot"></span>Em breve</div></div>
-    </div>
-
   </div>
+</section>
 
-  <footer>
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="foot-logo">Evorise</div>
-        <p class="foot-tagline">Criamos automações e <span>softwares</span> simples com precisão tecnológica.</p>
-      </div>
-      <div class="foot-social">
-        <a href="https://instagram.com/evoriseai" target="_blank" rel="noopener" aria-label="Instagram">
-          <i class="ti ti-brand-instagram"></i>
-        </a>
+<!-- MÓDULOS -->
+<section class="modulos">
+  <div class="section-kicker">Módulos</div>
+  <h2 class="section-title reveal">Um sistema.<br><em>Cada detalhe pensado.</em></h2>
+  <div class="modulos-grid">
+    <div class="mod-card reveal">
+      <div class="mod-icon">🍽️</div>
+      <div class="mod-name">Gestão de Mesas</div>
+      <p class="mod-desc">Visão em tempo real de todas as mesas. Veja quais estão ocupadas, o valor em aberto e o tempo de atendimento.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-icon">📲</div>
+      <div class="mod-name">Autoatendimento QR</div>
+      <p class="mod-desc">O cliente escaneia o QR Code da mesa e faz o pedido direto no celular. Sem fila, sem erro de anotação.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-icon">🚴</div>
+      <div class="mod-name">Gestão de Delivery</div>
+      <p class="mod-desc">Pedidos de delivery centralizados. iFood, WhatsApp ou direto no sistema — tudo no mesmo kanban.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-icon">👥</div>
+      <div class="mod-name">CRM de Clientes</div>
+      <p class="mod-desc">Histórico completo de cada cliente. Quantos pedidos fez, quanto gastou e quando foi a última visita.</p>
+    </div>
+    <div class="mod-card reveal highlight">
+      <div class="mod-icon">⭐</div>
+      <div class="mod-name">Programa de Fidelidade</div>
+      <p class="mod-desc">Sistema de pontos automático. O cliente acumula a cada compra e resgata prêmios — sem planilha, sem papel.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-icon">📊</div>
+      <div class="mod-name">Dashboard de Resultados</div>
+      <p class="mod-desc">Faturamento, ticket médio, ROI, pico de vendas por horário e produtos mais pedidos. Tudo em um painel.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-icon">💰</div>
+      <div class="mod-name">Caixa por Turno</div>
+      <p class="mod-desc">Abertura e fechamento de caixa com conferência de valores. Relatório em PDF disparado automaticamente.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-icon">🤖</div>
+      <div class="mod-name">Atendimento via IA</div>
+      <p class="mod-desc">IA que responde clientes e recupera carrinhos abandonados no delivery. 24 horas, sem custo de equipe.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-icon">🧾</div>
+      <div class="mod-name">Cardápio Digital</div>
+      <p class="mod-desc">Monte e organize o cardápio por categorias. Atualiza em tempo real em todos os pontos de atendimento.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NÚMEROS -->
+<section class="numeros">
+  <div class="numeros-grid">
+    <div class="num-item reveal">
+      <div class="num-value">0</div>
+      <div class="num-label">pedidos perdidos por falha de comunicação</div>
+    </div>
+    <div class="num-item reveal">
+      <div class="num-value">24h</div>
+      <div class="num-label">de atendimento automatizado pela IA</div>
+    </div>
+    <div class="num-item reveal">
+      <div class="num-value">100%</div>
+      <div class="num-label">dos canais de venda em um só lugar</div>
+    </div>
+    <div class="num-item reveal">
+      <div class="num-value">↑</div>
+      <div class="num-label">ticket médio com fidelidade e recuperação de carrinho</div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANOS -->
+<section class="planos">
+  <div class="section-kicker">Planos</div>
+  <h2 class="section-title reveal">Começa pequeno.<br><em>Cresce com você.</em></h2>
+  <div class="planos-grid">
+    <div class="plano-card reveal">
+      <div class="plano-badge">Essential</div>
+      <div class="plano-nome">Para começar</div>
+      <div class="plano-nicho">Operação básica completa</div>
+      <div class="plano-divider"></div>
+      <ul class="plano-features">
+        <li>Autoatendimento via QR Code</li>
+        <li>Sistema KDS integrado</li>
+        <li>Abertura e fechamento de caixa</li>
+        <li>Sistema PDV</li>
+      </ul>
+    </div>
+    <div class="plano-card reveal destaque">
+      <div class="plano-badge">Advanced</div>
+      <div class="plano-nome">Para crescer</div>
+      <div class="plano-nicho">Essential + inteligência</div>
+      <div class="plano-divider"></div>
+      <ul class="plano-features">
+        <li>Tudo do Essential</li>
+        <li>Atendimento via IA 24h</li>
+        <li>Link de rastreio de pedidos</li>
+        <li>CRM de clientes</li>
+        <li>Emissão de nota fiscal</li>
+        <li>Recuperação de carrinho</li>
+      </ul>
+    </div>
+    <div class="plano-card reveal">
+      <div class="plano-badge">Executive</div>
+      <div class="plano-nome">Para dominar</div>
+      <div class="plano-nicho">Advanced + retenção</div>
+      <div class="plano-divider"></div>
+      <ul class="plano-features">
+        <li>Tudo do Advanced</li>
+        <li>Dashboard de ROI</li>
+        <li>Campanhas de marketing</li>
+        <li>Programa de fidelização</li>
+      </ul>
+    </div>
+    <div class="plano-card reveal">
+      <div class="plano-badge">Custom</div>
+      <div class="plano-nome">Para escalar</div>
+      <div class="plano-nicho">Múltiplas unidades</div>
+      <div class="plano-divider"></div>
+      <ul class="plano-features">
+        <li>Tudo do Executive</li>
+        <li>Gestão multi-unidades</li>
+        <li>Alertas de performance</li>
+        <li>Ranking entre unidades</li>
+        <li>2+ estabelecimentos</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / CALENDÁRIO -->
+<section class="cta-section" id="agendar">
+  <div class="section-kicker">Próximo passo</div>
+  <h2 class="cta-title reveal">
+    Escolha um horário.<br>
+    <span class="accent">A conversa é rápida.</span>
+  </h2>
+  <p class="cta-sub reveal">Sem enrolação. Em 30 minutos você vê o sistema funcionando e decide se faz sentido para o seu negócio.</p>
+
+  <!-- SUBSTITUA O BLOCO ABAIXO PELO SEU EMBED DO CAL.COM -->
+  <!-- Exemplo: <cal-inline style="width:100%;height:600px" calLink="seu-usuario/fluxon"></cal-inline> -->
+  <div class="cal-wrapper reveal">
+    <div class="cal-placeholder">
+      <div class="cal-placeholder-icon">📅</div>
+      <div class="cal-placeholder-text">
+        <strong>Calendário de agendamento</strong>
+        Cole aqui o embed do seu Cal.com.<br>
+        Substitua esta div pelo script do Cal.com.
       </div>
     </div>
-    <div class="footer-bottom">
-      <div class="foot-copy">© 2026 Evorise. Todos os direitos reservados.</div>
-    </div>
-  </footer>
+  </div>
+  <!-- FIM DO BLOCO CAL.COM -->
 
-</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">Flux<span>ON</span></div>
+  <div class="foot-copy">© 2026 Evorise · Todos os direitos reservados</div>
+  <a href="/" class="foot-back">← Voltar para Evorise</a>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
 </body>
 </html>
