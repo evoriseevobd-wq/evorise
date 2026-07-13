@@ -11,10 +11,10 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:#08080D}
-    .ev{background:#08080D;font-family:'DM Sans',sans-serif;color:#F0EEE6}
+    .ev{background:#08080D;font-family:'DM Sans',sans-serif;color:#F0EEE6;max-width:1200px;margin:0 auto}
 
     nav{display:flex;justify-content:center;align-items:center;padding:22px 48px;border-bottom:0.5px solid rgba(255,255,255,0.07)}
-    .nav-logo{font-family:'DM Sans',sans-serif;font-weight:600;font-size:24px;letter-spacing:-0.5px;color:#F0EEE6}
+    .nav-logo{font-family:'DM Sans',sans-serif;font-weight:600;font-size:24px;letter-spacing:6px;text-transform:uppercase;color:#7B4FA6}
 
     .hero{padding:100px 48px 80px;max-width:680px}
     .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#7B4FA6;margin-bottom:24px;font-weight:500}
@@ -34,7 +34,7 @@
     .pcard{border-top:0.5px solid rgba(255,255,255,0.07);padding:36px 0;display:grid;grid-template-columns:220px 1fr;gap:48px;align-items:start}
     .pcard:last-child{border-bottom:0.5px solid rgba(255,255,255,0.07)}
 
-    .ptag{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:500;padding:4px 0;border-radius:20px;margin-bottom:18px;background:transparent}
+    .ptag{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:500;padding:4px 0;margin-bottom:18px;background:transparent}
     .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
     .t-fluxon{color:#EF4444}.t-fluxon .dot{background:#EF4444}
@@ -63,6 +63,28 @@
     footer{padding:36px 48px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center}
     .foot-logo{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:rgba(240,238,230,0.22)}
     .foot-copy{font-size:12px;color:rgba(240,238,230,0.15);font-weight:400}
+
+    @media(max-width:768px){
+      nav{padding:18px 24px}
+      .nav-logo{font-size:18px;letter-spacing:4px}
+
+      .hero{padding:64px 24px 56px;max-width:100%}
+      .hero-head{font-size:36px;letter-spacing:-1px}
+      .hero-sub{font-size:14px;max-width:100%}
+
+      .divider{margin:0 24px}
+
+      .products-section{padding:48px 24px}
+      .section-title{font-size:28px}
+
+      .pcard{grid-template-columns:1fr;gap:20px;padding:28px 0}
+      .ptag{margin-bottom:10px}
+      .pname{font-size:20px}
+
+      .soon-row{justify-content:flex-start;margin-top:4px}
+
+      footer{padding:28px 24px;flex-direction:column;gap:8px;text-align:center}
+    }
   </style>
 </head>
 <body>
@@ -91,13 +113,14 @@
       <div>
         <div class="ptag t-fluxon"><span class="dot"></span>Food & Delivery</div>
         <div class="pname pname-active">FluxOn</div>
-        <div class="pniche pniche-active">Setor alimentício</div>
+        <div class="pniche pniche-active">Restaurantes · Dark kitchens</div>
       </div>
       <div>
         <p class="ppain">"Pedido entrou, saiu errado, cliente foi embora."</p>
-        <p class="pdesc">Gestão completa de pedidos, produção e entrega para hamburgueria, pizzaria, esfiharia, pastelaria e etc... Do recebimento até a satisfação do cliente sem margem pra erro.</p>
+        <p class="pdesc">Gestão completa de pedidos, produção e entrega para restaurantes e dark kitchens. Do recebimento até o motoboy, sem margem pra erro.</p>
         <div class="pills">
           <span class="pill">Cardápio digital</span>
+          <span class="pill">Controle de produção</span>
           <span class="pill">Integração delivery</span>
           <span class="pill">Relatórios de venda</span>
         </div>
